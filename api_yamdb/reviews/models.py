@@ -9,6 +9,7 @@ User = get_user_model()
 
 
 class CategoryGenreAbstract(models.Model):
+    """Абстрактная модель для категорий и жанров"""
     slug = models.SlugField('Слаг', unique=True, max_length=SLUG_LENGTH)
     name = models.CharField('Название', max_length=NAME_LENGTH)
 
@@ -30,7 +31,7 @@ class Category(CategoryGenreAbstract):
 
 class Genre(CategoryGenreAbstract):
     "Жанры произведений"
-
+    
     class Meta(CategoryGenreAbstract.Meta):
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
@@ -38,7 +39,6 @@ class Genre(CategoryGenreAbstract):
 
 class Title(models.Model):
     "Произведения"
-
     name = models.CharField('Произведение', max_length=NAME_LENGTH)
     year = models.SmallIntegerField('Год выпуска', db_index=True,
                                     validators=[year_validator])
@@ -66,6 +66,7 @@ class Title(models.Model):
 
 
 class GenreTitle(models.Model):
+    """Модель жанра произведения"""
     title = models.ForeignKey(
         Title,
         blank=True,
@@ -98,6 +99,7 @@ class GenreTitle(models.Model):
 
 
 class PubDateMixin(models.Model):
+    """Абстрактная модель для дат публикации"""
     pub_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата публикации')
@@ -108,6 +110,7 @@ class PubDateMixin(models.Model):
 
 
 class Review(PubDateMixin, models.Model):
+    """Модель отзыва"""
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
@@ -140,6 +143,7 @@ class Review(PubDateMixin, models.Model):
 
 
 class Comment(PubDateMixin, models.Model):
+    """Модель комментария"""
     review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,

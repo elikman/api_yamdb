@@ -13,6 +13,7 @@ User = get_user_model()
 
 
 def category_create(row):
+    """Функция для создания категории"""
     Category.objects.get_or_create(
         id=row[0],
         name=row[1],
@@ -21,6 +22,7 @@ def category_create(row):
 
 
 def genre_create(row):
+    """Функция для создания жанра"""
     Genre.objects.get_or_create(
         id=row[0],
         name=row[1],
@@ -29,6 +31,7 @@ def genre_create(row):
 
 
 def titles_create(row):
+    """Функция для создания произведения"""
     Title.objects.get_or_create(
         id=row[0],
         name=row[1],
@@ -38,6 +41,7 @@ def titles_create(row):
 
 
 def users_create(row):
+    """Функция для создания пользователя"""
     User.objects.get_or_create(
         id=row[0],
         username=row[1],
@@ -50,6 +54,7 @@ def users_create(row):
 
 
 def review_create(row):
+    """Функция для создания отзыва"""
     title, _ = Title.objects.get_or_create(id=row[1])
     Review.objects.get_or_create(
         id=row[0],
@@ -62,6 +67,7 @@ def review_create(row):
 
 
 def comment_create(row):
+    """Функция для создания комментария"""
     review, _ = Review.objects.get_or_create(id=row[1])
     Comment.objects.get_or_create(
         id=row[0],
@@ -73,6 +79,7 @@ def comment_create(row):
 
 
 def genre_title_create(row):
+    """Функция для создания связи между жанром и произведением"""
     title, _ = Title.objects.get_or_create(id=row[1])
     genre, _ = Genre.objects.get_or_create(id=row[2])
     GenreTitle.objects.get_or_create(
@@ -83,6 +90,9 @@ def genre_title_create(row):
 
 
 action = {
+    """Словарь, где ключ - имя файла,
+    а значение - функция для создания объектов"""
+
     'category.csv': category_create,
     'genre.csv': genre_create,
     'titles.csv': titles_create,
@@ -94,6 +104,7 @@ action = {
 
 
 class Command(BaseCommand):
+    """Класс команды для загрузки данных в базу данных"""
     help = "Load test DB from dir (../static/data/)"
 
     def handle(self, *args, **options):

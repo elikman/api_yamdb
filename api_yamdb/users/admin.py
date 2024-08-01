@@ -8,4 +8,5 @@ User = get_user_model()
 
 @admin.register(User)
 class UserAdmin(UA):
+    """Регистрируем модель пользователя в административном интерфейсе"""
     list_display = ("username", "email")

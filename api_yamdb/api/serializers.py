@@ -16,6 +16,7 @@ from users.validators import validate_username_me
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    """Сериализатор для отзывов"""
     author = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True
@@ -26,6 +27,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ('id', 'text', 'author', 'score', 'pub_date')
 
     def validate(self, data):
+        """Метод для валидации данных"""
         request = self.context['request']
         if request.method == 'POST':
             user = request.user
@@ -38,6 +40,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    """Сериализатор для комментариев"""
     author = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True
@@ -49,18 +52,21 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """Сериализатор для категорий"""
     class Meta:
         exclude = ('id',)
         model = Category
 
 
 class GenreSerializer(serializers.ModelSerializer):
+    """Сериализатор для жанров"""
     class Meta:
         exclude = ('id',)
         model = Genre
 
 
 class TitleReadSerializer(serializers.ModelSerializer):
+    """Сериализатор для чтения информации о произведении"""
     category = CategorySerializer(read_only=True)
     genre = GenreSerializer(many=True, read_only=True)
     rating = serializers.IntegerField(read_only=True, default=None)
@@ -71,6 +77,7 @@ class TitleReadSerializer(serializers.ModelSerializer):
 
 
 class TitleCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания нового произведения"""
     category = serializers.SlugRelatedField(
         queryset=Category.objects.all(),
         slug_field='slug',
@@ -84,6 +91,7 @@ class TitleCreateSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
+        """Метод, преобразующий данные в представление"""
         model = Title
         fields = '__all__'
 
@@ -93,6 +101,7 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Сериализатор для пользователя"""
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name',
@@ -100,6 +109,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class SignupSerializer(serializers.Serializer):
+    """Сериализатор для регистрации нового пользователя"""
     username = serializers.CharField(
         max_length=MAX_LENGTH_USERNAME,
         validators=[
@@ -123,6 +133,7 @@ class SignupSerializer(serializers.Serializer):
     )
 
     def validate(self, data):
+        """Метод для валидации данных"""
         try:
             User.objects.get_or_create(
                 username=data.get('username'),
@@ -135,6 +146,7 @@ class SignupSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
+        """Метод для создания нового пользователя"""
         username = validated_data['username']
         email = validated_data['email']
 
@@ -152,6 +164,7 @@ class SignupSerializer(serializers.Serializer):
 
 
 class CreateTokenSerializer(serializers.Serializer):
+    """Сериализатор для создания токена доступа"""
     username = serializers.CharField(max_length=MAX_LENGTH_USERNAME)
     confirmation_code = serializers.CharField()
 
@@ -168,6 +181,7 @@ class CreateTokenSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
+        """Метод для валидации данных"""
         user = validated_data['user']
         user.is_active = True
         user.save()

@@ -10,6 +10,7 @@ from .validators import validate_username_me
 
 
 class CinemaUser(AbstractUser):
+    """Определяем модель пользователя"""
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
@@ -17,11 +18,13 @@ class CinemaUser(AbstractUser):
 
     @property
     def is_admin(self):
+        """Свойство, которое проверяет, является ли пользователь админом"""
         return (self.role == RoleEnum.ADMIN
                 or self.is_superuser or self.is_staff)
 
     @property
     def is_moderator(self):
+        """Свойство, которое проверяет, является ли пользователь модератором"""
         return self.role == RoleEnum.MODERATOR
 
     role = models.CharField(max_length=MAX_LENGTH_ROLE,
@@ -50,4 +53,5 @@ class CinemaUser(AbstractUser):
     )
 
     def __str__(self):
+        """Метод, который возвращает строковое представление объекта"""
         return self.username
