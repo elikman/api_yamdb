@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from .constants import NAME_LENGTH, SLUG_LENGTH, TEXT_LIMIT
+from .constants import NAME_LENGTH, SLUG_LENGTH, TEXT_LENGTH
 from .validators import year_validator
 
 User = get_user_model()
@@ -136,7 +136,7 @@ class Review(PubDateMixin, models.Model):
         verbose_name_plural = 'Отзывы'
 
     def __str__(self):
-        return self.text[:TEXT_LIMIT]
+        return self.text[:TEXT_LENGTH]
 
 
 class Comment(PubDateMixin, models.Model):
@@ -153,7 +153,7 @@ class Comment(PubDateMixin, models.Model):
     )
 
     def __str__(self):
-        return self.text[:TEXT_LIMIT]
+        return self.text[:TEXT_LENGTH]
 
     class Meta(PubDateMixin.Meta):
         verbose_name = 'Комментарий'

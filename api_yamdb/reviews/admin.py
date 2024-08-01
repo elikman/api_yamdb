@@ -2,20 +2,20 @@ from django.contrib import admin
 
 from .models import Category, Comment, Genre, Review, Title
 
-EMPTY_VALUE_DISPLAY = '-пусто-'
+EMPTY_DISPLAY = '-пусто-'
 
 
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ('pk', 'title', 'text', 'author', 'score', 'pub_date')
     search_fields = ('text',)
-    empty_value_display = EMPTY_VALUE_DISPLAY
+    empty_value_display = EMPTY_DISPLAY
     list_editable = ('text', 'author', 'score')
 
 
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('pk', 'review', 'author', 'text', 'pub_date')
     search_fields = ('text',)
-    empty_value_display = EMPTY_VALUE_DISPLAY
+    empty_value_display = EMPTY_DISPLAY
 
 
 class CategoryAdmin(admin.ModelAdmin):

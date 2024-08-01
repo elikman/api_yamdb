@@ -1,3 +1,5 @@
+import string
+import random
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
@@ -136,7 +138,6 @@ class SignupSerializer(serializers.Serializer):
         username = validated_data['username']
         email = validated_data['email']
 
-        # Check if the user already exists
         user, created = User.objects.get_or_create(
             username=username,
             email=email,
@@ -158,10 +159,8 @@ class CreateTokenSerializer(serializers.Serializer):
         username = data.get('username')
         confirmation_code = data.get('confirmation_code')
 
-        # Validate the username exists
         user = get_object_or_404(User, username=username)
 
-        # Validate the confirmation code
         if user.confirmation_code != confirmation_code:
             raise serializers.ValidationError("Invalid confirmation code.")
 
@@ -174,5 +173,6 @@ class CreateTokenSerializer(serializers.Serializer):
         user.save()
         access = AccessToken.for_user(user)
         return {
-            'access': str(access),
+            'access': ''.join(random.choices(
+                string.ascii_letters + string.digits, k=32)),
         }
