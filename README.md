@@ -7,30 +7,65 @@
 Клонировать репозиторий и перейти в него в командной строке:
 
 ```
-git clone https://github.com/Evgeniy188/api_yamdb
+git clone https://github.com/elikman/api_yamdb.git
 ```
 
 Cоздать и активировать виртуальное окружение:
+
+Windows
 ```
-python3 -m venv env
-source env/bin/activate
+python -m venv venv
+source venv/Scripts/activate
+```
+Linux/macOS
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Обновить PIP
+
+Windows
+```
+python -m pip install --upgrade pip
+```
+Linux/macOS
+```
+python3 -m pip install --upgrade pip
 ```
 
 Установить зависимости из файла requirements.txt:
+
 ```
-python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
 Выполнить миграции:
+
+Windows
 ```
+python manage.py makemigrations
+python manage.py migrate
+```
+
+Linux/macOS
+```
+python3 manage.py makemigrations
 python3 manage.py migrate
 ```
 
 Запустить проект:
+
+Windows
+```
+python manage.py runserver
+```
+
+Linux/macOS
 ```
 python3 manage.py runserver
 ```
+
 ---
 ## Техническое описание проекта YaMDb
 
@@ -76,6 +111,4 @@ python3 manage.py runserver
 При удалении объекта жанра **Genre** не нужно удалять связанные с этим жанром произведения.
 
 # Авторы
-[Наталья Бравая](https://github.com/NataliaBravaya)
-[Андрей Прыгунов](https://github.com/Prygunov-Andrei)
-[Евгений Лапшин](https://github.com/Evgeniy188)
+[Набиев Эльтадж](https://github.com/NataliaBravaya)
