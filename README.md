@@ -111,4 +111,4 @@ python3 manage.py runserver
 При удалении объекта жанра **Genre** не нужно удалять связанные с этим жанром произведения.
 
 # Авторы
-[Набиев Эльтадж](https://github.com/NataliaBravaya)
+[Набиев Эльтадж](https://github.com/elikman)
