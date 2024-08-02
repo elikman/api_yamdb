@@ -9,9 +9,9 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from api.utils import generate_confirmation_code, send_confirmation_email
 from reviews.models import Category, Comment, Genre, Review, Title
-from users.constants import MAX_LENGTH_EMAIL, MAX_LENGTH_USERNAME
+from users.constants import CONST_EMAIL_LENGTH, CONST_USERNAME_LENGTH
 from users.models import CinemaUser as User
-from users.roles import RoleEnum
+from users.roles import Roles
 from users.validators import validate_username_me
 
 
@@ -111,7 +111,7 @@ class UserSerializer(serializers.ModelSerializer):
 class SignupSerializer(serializers.Serializer):
     """Сериализатор для регистрации нового пользователя"""
     username = serializers.CharField(
-        max_length=MAX_LENGTH_USERNAME,
+        max_length=CONST_USERNAME_LENGTH,
         validators=[
             UnicodeUsernameValidator(),
             validate_username_me
@@ -123,7 +123,7 @@ class SignupSerializer(serializers.Serializer):
         }
     )
     email = serializers.EmailField(
-        max_length=MAX_LENGTH_EMAIL,
+        max_length=CONST_EMAIL_LENGTH,
         error_messages={
             'blank': 'This field may not be blank.',
             'required': 'This field is required.',
@@ -153,7 +153,7 @@ class SignupSerializer(serializers.Serializer):
         user, created = User.objects.get_or_create(
             username=username,
             email=email,
-            defaults={'is_active': False, 'role': RoleEnum.USER.value}
+            defaults={'is_active': False, 'role': Roles.USER.value}
         )
         confirmation_code = generate_confirmation_code()
         user.confirmation_code = confirmation_code
@@ -165,7 +165,7 @@ class SignupSerializer(serializers.Serializer):
 
 class CreateTokenSerializer(serializers.Serializer):
     """Сериализатор для создания токена доступа"""
-    username = serializers.CharField(max_length=MAX_LENGTH_USERNAME)
+    username = serializers.CharField(max_length=CONST_USERNAME_LENGTH)
     confirmation_code = serializers.CharField()
 
     def validate(self, data):

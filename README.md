@@ -65,6 +65,11 @@ Linux/macOS
 ```
 python3 manage.py runserver
 ```
+Импорт данных из csv:
+
+```
+python manage.py load_csv
+```
 
 ---
 ## Техническое описание проекта YaMDb
