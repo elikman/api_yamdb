@@ -185,8 +185,5 @@ class CreateTokenSerializer(serializers.Serializer):
         user = validated_data['user']
         user.is_active = True
         user.save()
-        access = AccessToken.for_user(user)
-        return {
-            'access': ''.join(random.choices(
-                string.ascii_letters + string.digits, k=32)),
-        }
+        token = AccessToken.for_user(user)
+        return {'access': token}
