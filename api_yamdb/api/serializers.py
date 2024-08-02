@@ -1,5 +1,3 @@
-import string
-import random
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
