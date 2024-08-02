@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import Avg
+from django.urls import reverse
 
 from .constants import NAME_LENGTH, SLUG_LENGTH, TEXT_LENGTH
 from .validators import year_validator
@@ -15,7 +17,7 @@ class CategoryGenreAbstract(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ('name', )
+        ordering = ('name',)
 
     def __str__(self):
         return self.name
@@ -31,7 +33,7 @@ class Category(CategoryGenreAbstract):
 
 class Genre(CategoryGenreAbstract):
     "Жанры произведений"
-    
+
     class Meta(CategoryGenreAbstract.Meta):
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
@@ -45,12 +47,12 @@ class Title(models.Model):
     description = models.TextField('Описание', blank=True)
     genre = models.ManyToManyField(
         Genre,
-        related_name='titles',
+        related_name='genres_titles',
         verbose_name='Жанр',
     )
     category = models.ForeignKey(
         Category,
-        related_name='titles',
+        related_name='category_titles',
         verbose_name='Категория',
         on_delete=models.SET_NULL,
         null=True,
@@ -64,6 +66,12 @@ class Title(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('title_detail', args=[str(self.id)])
+
+    def get_average_score(self):
+        return self.reviews.aggregate(Avg('score'))['score__avg']
+
 
 class GenreTitle(models.Model):
     """Модель жанра произведения"""
@@ -72,7 +80,7 @@ class GenreTitle(models.Model):
         blank=True,
         null=True,
         on_delete=models.CASCADE,
-        related_name='titles',
+        related_name='genre_titles',
         verbose_name='Произведение'
     )
     genre = models.ForeignKey(
@@ -80,7 +88,7 @@ class GenreTitle(models.Model):
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
-        related_name='genres',
+        related_name='genre_titles',
         verbose_name='Жанр'
     )
 
@@ -117,11 +125,11 @@ class Review(PubDateMixin, models.Model):
         related_name='reviews',
         verbose_name='Отзывы'
     )
-    text = models.TextField(verbose_name='Техт отзыва')
+    text = models.TextField(verbose_name='Текст отзыва')
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='reviews'
+        related_name='user_reviews'
     )
     score = models.PositiveSmallIntegerField(
         verbose_name='Рейтинг',
@@ -153,7 +161,7 @@ class Comment(PubDateMixin, models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='comments'
+        related_name='user_comments'
     )
 
     def __str__(self):
