@@ -14,10 +14,9 @@ class ReviewInline(admin.TabularInline):
     extra = 1
     readonly_fields = ('pub_date',)
 
+    @admin.display(description='Средний рейтинг')
     def get_average_score(self, obj):
         return obj.get_average_score()
-
-    get_average_score.short_description = 'Средний рейтинг'  # type: ignore
 
 
 class CommentInline(admin.TabularInline):

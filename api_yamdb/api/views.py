@@ -1,8 +1,8 @@
 from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from rest_framework import (filters, generics, mixins, permissions,
-                            status, viewsets)
+
+from rest_framework import filters, generics, mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
@@ -12,7 +12,7 @@ from rest_framework.response import Response
 
 from reviews.models import Category, Genre, Review, Title
 from users.models import CinemaUser as User
-from .filters import TitleFilter
+from api.filters import TitleFilter
 from .permissions import IsAdmin, IsAdminOrReadOnly, IsAuthorOrReadOnly
 from .serializers import (CategorySerializer, CommentSerializer,
                           CreateTokenSerializer, GenreSerializer,
@@ -22,7 +22,8 @@ from .serializers import (CategorySerializer, CommentSerializer,
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    """Класс для работы с отзывами"""
+    """Класс для работы с отзывами."""
+
     serializer_class = ReviewSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
@@ -39,7 +40,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    """Класс для работы с комментариями"""
+    """Класс для работы с комментариями."""
+
     serializer_class = CommentSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
@@ -61,7 +63,8 @@ class CreateListDestroyViewset(
         mixins.DestroyModelMixin,
         viewsets.GenericViewSet,
 ):
-    """Базовый класс для создания, списка и удаления объектов"""
+    """Базовый класс для создания, списка и удаления объектов."""
+
     search_fields = ('name', )
     lookup_field = 'slug'
     filter_backends = (filters.SearchFilter, )
@@ -69,21 +72,24 @@ class CreateListDestroyViewset(
 
 
 class CategoryViewSet(CreateListDestroyViewset):
-    """Класс для работы с категориями"""
+    """Класс для работы с категориями."""
+
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrReadOnly,)
 
 
 class GenreViewSet(CreateListDestroyViewset):
-    """Класс для работы с жанрами"""
+    """Класс для работы с жанрами."""
+
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrReadOnly,)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    """Класс для работы с произведениями"""
+    """Класс для работы с произведениями."""
+
     queryset = Title.objects.annotate(
         rating=Avg('reviews__score')).order_by('-rating', 'name')
     permission_classes = (IsAdminOrReadOnly, )
@@ -99,7 +105,8 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    """Класс для работы с пользователями"""
+    """Класс для работы с пользователями."""
+
     http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -124,7 +131,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class SignupView(generics.CreateAPIView):
-    """Класс для регистрации новых пользователей"""
+    """Класс для регистрации новых пользователей."""
+
     serializer_class = SignupSerializer
     permission_classes = [permissions.AllowAny]
     renderer_classes = [JSONRenderer]
@@ -138,7 +146,8 @@ class SignupView(generics.CreateAPIView):
 
 
 class CreateTokenView(generics.CreateAPIView):
-    """Класс для создания токена для авторизации"""
+    """Класс для создания токена для авторизации."""
+
     serializer_class = CreateTokenSerializer
     permission_classes = [permissions.AllowAny]
     renderer_classes = [JSONRenderer]

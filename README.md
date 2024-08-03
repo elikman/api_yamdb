@@ -96,6 +96,90 @@ python manage.py load_csv
 После этого пользователь должен самостоятельно отправить свой `email` и `username` на эндпоинт `/api/v1/auth/signup/` , в ответ ему должно прийти письмо с кодом подтверждения.
 Далее пользователь отправляет POST-запрос с параметрами `username` и `confirmation_code` на эндпоинт `/api/v1/auth/token/`, в ответе на запрос ему приходит `token` (JWT-токен), как и при самостоятельной регистрации.
 
+## Примеры эндпойтнов
+
+* /api/v1/auth/signup/ (POST): *регистрация нового пользователя.*
+* /api/v1/auth/token/ (POST): *получение jwt-токена.*
+* /api/v1/categories/ (GET): *Получение списка всех категорий.*
+* /api/v1/genres/ (GET, POST): *получение списка всех жанров или создание нового жанра.*
+* /api/v1/genres/ (GET, PUT, PATCH, DELETE): *получение, редактирование или удаление произведения.*
+* /api/v1/titles/{title_id}/reviews/ (GET): *Получение списка всех отзывов.*
+* /api/v1/titles/{title_id}/reviews/ (POST): Добавление нового отзыва*
+* /api/v1/titles/{title_id}/reviews/{review_id}/comments/ (GET, POST): *получение списка всех комментариев к отзыву по id или создание нового комментария.*
+* /api/v1/users/ (GET): *Получение списка всех пользователей.*
+
+## Примеры ответа от сервера
+
+* POST-запрос: Регистрация нового пользователя. Получить код подтверждения на переданный email.
+
+```
+{
+    "email": "user@example.com",
+    "username": "string"
+} 
+```
+
+Ответ:
+
+```
+{
+    "email": "string",
+    "username": "string"
+}
+```
+
+* GET-запрос: Получение списка всех категорий.
+
+Ответ:
+
+```
+{
+    "count": 0,
+    "next": "string",
+    "previous": "string",
+    "results": [
+    + {}
+    ]
+} 
+
+```
+
+* POST-запрос: Добавление произведения.
+
+```
+{
+    "name": "string",
+    "year": 0,
+    "description": "string",
+    "genre": [
+        "string"
+    ],
+    "category": "string"
+}
+```
+
+Ответ:
+
+```
+{
+  "id": 0,
+  "name": "string",
+  "year": 0,
+  "rating": 0,
+  "description": "string",
+  "genre": [
+    {
+      "name": "string",
+      "slug": "string"
+    }
+  ],
+  "category": {
+    "name": "string",
+    "slug": "string"
+  }
+}
+```
+
 ### Ресурсы API YaMDb
 + Ресурс **auth**: аутентификация.
 + Ресурс **users**: пользователи.
