@@ -2,7 +2,13 @@ from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 
-from rest_framework import filters, generics, mixins, permissions, status, viewsets
+from rest_framework import (
+    filters,
+    generics,
+    mixins,
+    permissions,
+    status,
+    viewsets)
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
