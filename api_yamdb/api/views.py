@@ -1,14 +1,8 @@
 from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-
-from rest_framework import (
-    filters,
-    generics,
-    mixins,
-    permissions,
-    status,
-    viewsets)
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import (filters, generics, mixins, permissions, status,
+                            viewsets)
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
@@ -16,15 +10,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
+from api.filters import TitleFilter
+from api.permissions import IsAdmin, IsAdminOrReadOnly, IsAuthorOrReadOnly
+from api.serializers import (CategorySerializer, CommentSerializer,
+                             CreateTokenSerializer, GenreSerializer,
+                             ReviewSerializer, SignupSerializer,
+                             TitleCreateSerializer, TitleReadSerializer,
+                             UserSerializer)
 from reviews.models import Category, Genre, Review, Title
 from users.models import CinemaUser as User
-from api.filters import TitleFilter
-from .permissions import IsAdmin, IsAdminOrReadOnly, IsAuthorOrReadOnly
-from .serializers import (CategorySerializer, CommentSerializer,
-                          CreateTokenSerializer, GenreSerializer,
-                          ReviewSerializer, SignupSerializer,
-                          TitleCreateSerializer, TitleReadSerializer,
-                          UserSerializer)
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -47,14 +41,17 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     """Класс для работы с комментариями."""
-
     serializer_class = CommentSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsAuthorOrReadOnly)
 
     def get_review(self):
-        return get_object_or_404(Review, id=self.kwargs['review_id'])
+        title_id = self.kwargs.get('title_id')
+        review_id = self.kwargs.get('review_id')
+        title = get_object_or_404(Title, id=title_id)
+        review = get_object_or_404(Review, id=review_id, title=title)
+        return review
 
     def get_queryset(self):
         return self.get_review().comments.all()

@@ -4,12 +4,7 @@ from django.db import models
 from django.db.models import Avg
 from django.urls import reverse
 
-from .constants import (
-    NAME_LENGTH,
-    SLUG_LENGTH,
-    TEXT_LENGTH,
-    MIN_SCORE,
-    MAX_SCORE)
+from .constants import MAX_SCORE, MIN_SCORE, NAME_LENGTH, TEXT_LENGTH
 from .validators import year_validator
 
 User = get_user_model()
@@ -18,16 +13,8 @@ User = get_user_model()
 class CategoryGenreAbstract(models.Model):
     """Абстрактная модель для категорий и жанров."""
 
-    slug = models.SlugField(
-        'Слаг',
-        unique=True,
-        max_length=SLUG_LENGTH,
-    )
-
-    name = models.CharField(
-        'Название',
-        max_length=NAME_LENGTH,
-    )
+    slug = models.SlugField('Слаг', unique=True)
+    name = models.CharField('Название', max_length=NAME_LENGTH)
 
     class Meta:
         abstract = True
@@ -128,13 +115,12 @@ class PubDate(models.Model):
 
     pub_date = models.DateTimeField(
         auto_now_add=True,
-        verbose_name='Дата публикации'
-    )
+        verbose_name='Дата публикации')
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='%(class)s'
-    )
+        related_name='%(class)s')
+    text = models.TextField(verbose_name='Текст')
 
     class Meta:
         abstract = True
@@ -153,7 +139,6 @@ class Review(PubDate, models.Model):
         related_name='reviews',
         verbose_name='Отзывы'
     )
-    text = models.TextField(verbose_name='Текст отзыва')
     score = models.PositiveSmallIntegerField(
         verbose_name='Рейтинг',
         validators=[MinValueValidator(MIN_SCORE), MaxValueValidator(MAX_SCORE)]
@@ -180,9 +165,9 @@ class Comment(PubDate, models.Model):
     )
     text = models.TextField(verbose_name='Текст комментария')
 
-    def __str__(self):
-        return self.text[:TEXT_LENGTH]
-
     class Meta(PubDate.Meta):
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return self.text[:TEXT_LENGTH]

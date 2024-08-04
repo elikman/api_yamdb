@@ -1,6 +1,5 @@
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.auth.tokens import default_token_generator
-from django.db import IntegrityError
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -10,7 +9,6 @@ from api.utils import generate_confirmation_code, send_confirmation_email
 from reviews.models import Category, Comment, Genre, Review, Title
 from users.constants import CONST_EMAIL_LENGTH, CONST_USERNAME_LENGTH
 from users.models import CinemaUser as User
-from users.roles import Roles
 from users.validators import validate_username_me
 
 
@@ -117,7 +115,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class SignupSerializer(serializers.Serializer):
-    """Сериализатор для регистрации нового пользователя"""
+    """Сериализатор для регистрации нового пользователя."""
     username = serializers.CharField(
         max_length=CONST_USERNAME_LENGTH,
         validators=[
@@ -141,27 +139,25 @@ class SignupSerializer(serializers.Serializer):
     )
 
     def validate(self, data):
-        """Метод для валидации данных"""
-        try:
-            User.objects.get_or_create(
-                username=data.get('username'),
-                email=data.get('email')
-            )
-        except IntegrityError:
+        if User.objects.filter(username=data.get('username'),
+                               email=data.get('email')).exists():
+            return data
+        if User.objects.filter(username=data.get('username')):
             raise serializers.ValidationError(
-                'A user with that username or email already exists.'
-            )
+                'Данный пользователь уже существует!')
+        if User.objects.filter(email=data.get('email')):
+            raise serializers.ValidationError(
+                'Данная почта уже существует!')
         return data
 
     def create(self, validated_data):
-        """Метод для создания нового пользователя"""
+        """Метод для создания нового пользователя."""
         username = validated_data['username']
         email = validated_data['email']
 
-        user, created = User.objects.get_or_create(
+        user, _ = User.objects.get_or_create(
             username=username,
             email=email,
-            defaults={'is_active': False, 'role': Roles.USER.value}
         )
         confirmation_code = generate_confirmation_code()
         user.confirmation_code = confirmation_code
@@ -194,6 +190,5 @@ class CreateTokenSerializer(serializers.Serializer):
         """Метод для валидации данных."""
 
         user = validated_data['user']
-        user.save()
         token = AccessToken.for_user(user)
         return {'access': token}

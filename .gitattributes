@@ -1,2 +1,2 @@
 #.gitattributes
-#echo "text=auto" >> .gitattributes
+echo "text=auto" >> .gitattributes

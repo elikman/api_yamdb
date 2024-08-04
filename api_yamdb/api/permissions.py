@@ -13,9 +13,7 @@ class IsAdmin(permissions.BasePermission):
         Возвращает True, если пользователь аутентифицирован и является
         администратором (is_staff или is_admin).
         """
-        return request.user.is_authenticated and (
-            request.user.is_staff or request.user.is_admin
-        )
+        return request.user.is_authenticated and request.user.is_admin
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -51,11 +49,9 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
         или если пользователь аутентифицирован и является автором объекта,
         модератором или администратором.
         """
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        return request.user.is_authenticated and (
-            request.user == obj.author
-            or request.user.is_moderator
-            or request.user.is_admin
+        return (
+            request.method in permissions.SAFE_METHODS
+            or request.user.is_authenticated
+            and (request.user == obj.author or request.user.is_moderator
+                 or request.user.is_admin)
         )
