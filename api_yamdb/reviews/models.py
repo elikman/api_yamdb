@@ -168,6 +168,3 @@ class Comment(PubDate, models.Model):
     class Meta(PubDate.Meta):
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
-
-    def __str__(self):
-        return self.text[:TEXT_LENGTH]

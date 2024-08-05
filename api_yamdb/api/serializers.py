@@ -179,7 +179,7 @@ class CreateTokenSerializer(serializers.Serializer):
 
         user = get_object_or_404(User, username=username)
 
-        if not default_token_generator.check_token(user, confirmation_code):
+        if user.confirmation_code != confirmation_code:
             raise serializers.ValidationError(
                 "Недействительный код подтверждения.")
 
