@@ -190,4 +190,4 @@ class CreateTokenSerializer(serializers.Serializer):
 
         user = validated_data['user']
         token = AccessToken.for_user(user)
-        return {'access': token}
+        return {'access': str(token)}
